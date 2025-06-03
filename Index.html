@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>JanakCMS Editor</title>
-  <link rel="stylesheet" href="style.css">
+  <title>JanakCMS (JSON Editor)</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>JanakCMS Editor</h1>
-  <button id="login">Login with GitHub</button>
-  <div id="editor" style="display:none;">
-    <textarea id="content" rows="10" cols="50"></textarea><br>
-    <button id="save">Save to GitHub</button> 
-	
+  <h1>JanakCMS</h1>
+
+  <div id="auth">
+    <input type="password" id="tokenInput" placeholder="Paste your GitHub token here">
+    <button onclick="saveToken()">Login</button>
   </div>
+
+  <div id="editor" style="display:none;">
+    <textarea id="content" rows="12" cols="80"></textarea><br>
+    <button id="save">💾 Save to GitHub</button>
+  </div>
+
   <script src="cms.js"></script>
 </body>
 </html>

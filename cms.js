@@ -1,45 +1,49 @@
-const CLIENT_ID = 'Ov23liINgx561QAqOXQb'; // Replace with your GitHub OAuth client ID
-
 const REPO = 'jayc8586/JanakCMS';
 const FILE_PATH = 'content.json';
 
-document.getElementById('login').onclick = () => {
-  const url = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
-  window.location.href = url;
-};
+function saveToken() {
+  const token = document.getElementById('tokenInput').value.trim();
+  if (!token) return alert('Please paste your GitHub token.');
+  localStorage.setItem('gh_token', token);
+  location.reload();
+}
 
-// After OAuth redirect, handle the access token
-const accessToken = localStorage.getItem('gh_token'); // Set after login (simplified)
+const token = localStorage.getItem('gh_token');
 
-if (accessToken) {
+if (token) {
+  document.getElementById('auth').style.display = 'none';
   document.getElementById('editor').style.display = 'block';
-  document.getElementById('login').style.display = 'none';
 
-  // Fetch existing content
+  // Load existing content.json
   fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
-    headers: { Authorization: `token ${accessToken}` }
+    headers: { Authorization: `token ${token}` }
   })
-  .then(res => res.json())
-  .then(data => {
-    const content = atob(data.content);
-    document.getElementById('content').value = content;
-  });
-
-  document.getElementById('save').onclick = () => {
-    const content = document.getElementById('content').value;
-    const encoded = btoa(unescape(encodeURIComponent(content)));
-
-    fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
-      method: 'PUT',
-      headers: {
-        Authorization: `token ${accessToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: 'Update content.json',
-        content: encoded
-      })
+    .then(res => res.json())
+    .then(data => {
+      const decoded = atob(data.content);
+      document.getElementById('content').value = decoded;
+      document.getElementById('save').onclick = () => saveContent(data.sha);
     })
-    .then(res => res.ok ? alert('Saved!') : alert('Error saving content.'));
-  };
+    .catch(err => alert('Failed to load content.json. Is the file created?'));
+}
+
+function saveContent(sha) {
+  const updatedContent = document.getElementById('content').value;
+  const encoded = btoa(unescape(encodeURIComponent(updatedContent)));
+
+  fetch(`https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `token ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: 'Update content.json from CMS',
+      content: encoded,
+      sha: sha,
+    }),
+  })
+    .then(res => res.json())
+    .then(() => alert('✅ Saved successfully!'))
+    .catch(() => alert('❌ Error saving file.'));
 }

@@ -1,4 +1,5 @@
-const CLIENT_ID = 'YOUR_CLIENT_ID'; // Replace with your GitHub OAuth client ID
+const CLIENT_ID = 'Ov23liINgx561QAqOXQb'; // Replace with your GitHub OAuth client ID
+
 const REPO = 'jayc8586/JanakCMS';
 const FILE_PATH = 'content.json';
 

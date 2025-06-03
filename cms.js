@@ -4,7 +4,7 @@ const FILE_PATH = 'content.json';
 window.onload = () => {
   const token = localStorage.getItem('gh_token');
 
-  document.getElementById('saveTokenBtn').onclick = () => {
+  document.getElementById('saveToken').onclick = () => {
     const input = document.getElementById('tokenInput').value.trim();
     if (!input) return alert('Please enter your GitHub token.');
     localStorage.setItem('gh_token', input);
